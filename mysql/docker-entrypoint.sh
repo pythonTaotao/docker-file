@@ -63,7 +63,7 @@ if [ "$1" = 'mysqld' ]; then
 		#		exit 1
 		#	fi
 		#fi
-                MYSQL_ROOT_PASSWORD="Lab@123"
+                MYSQL_ROOT_PASSWORD="mysql"
 		if [ -z "$MYSQL_ROOT_PASSWORD" -a -z "$MYSQL_ALLOW_EMPTY_PASSWORD" -a -z "$MYSQL_RANDOM_ROOT_PASSWORD" ]; then
 			echo >&2 '[Entrypoint] No password option specified for new database.'
 			echo >&2 '[Entrypoint]   A random onetime password will be generated.'
