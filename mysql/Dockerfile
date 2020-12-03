@@ -1,8 +1,10 @@
-FROM dockerhub.local:5000/iss/centos
+FROM centos:7.6
 
 ARG MYSQL_SERVER_PACKAGE=mysql-community-server-minimal-5.7.31
 ARG MYSQL_SHELL_PACKAGE=mysql-shell-8.0.21
 
+COPY docker-entrypoint.sh /entrypoint.sh
+COPY healthcheck.sh /healthcheck.sh
 # Install server
 RUN yum install -y https://repo.mysql.com/mysql-community-minimal-release-el7.rpm \
       https://repo.mysql.com/mysql-community-release-el7.rpm \
@@ -17,10 +19,8 @@ RUN yum install -y https://repo.mysql.com/mysql-community-minimal-release-el7.rp
 
 VOLUME /var/lib/mysql
 
-COPY docker-entrypoint.sh /entrypoint.sh
-COPY healthcheck.sh /healthcheck.sh
 ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK CMD /healthcheck.sh
-EXPOSE 3306 33060
+EXPOSE 3306 
 CMD ["mysqld"]
 
