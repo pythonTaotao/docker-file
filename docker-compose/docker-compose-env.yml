@@ -1,0 +1,107 @@
+version: '3'
+services:
+  portainer:
+    image: 192.168.1.154/kindo-common/portainer-ce:2.6.0
+    container_name: kindo-portainer                    
+    restart: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/kindo/portainer/data:/data"
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:
+      - "9000:9000"
+    networks:
+      - kindo-network
+
+  nginx: 
+    image: 192.168.1.154/kindo-common/nginx:1.21
+    container_name: kindo-nginx
+    restart: always
+    volumes:
+      - "/kindo/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "/kindo/nginx/conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
+      - "/kindo/nginx/html:/usr/share/nginx/html"
+      - "/kindo/nginx/log:/var/log/nginx"
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:
+      - "80:80"
+    networks:
+      - kindo-network
+
+  mysql:
+    image: 192.168.1.154/kindo-common/mysql:5.7.34
+    container_name: kindo-mysql
+    restart: always
+    volumes:
+      - "/kindo/mysql/my.cnf:/etc/mysql/my.cnf"
+      - "/kindo/mysql/data:/var/lib/mysql"
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    ports:
+      - "3306:3306"
+    networks:
+      - kindo-network
+
+  redis:
+    image: 192.168.1.154/kindo-common/redis:6.2
+    container_name: kindo-redis
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD} --appendonly yes
+    volumes: 
+      - "/kindo/redis/data:/data"
+      - "/kindo/redis/redis.conf:/usr/local/etc/redis/redis.conf"
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    ports:
+      - "6379:6379"
+    networks:
+      - kindo-network
+
+  nacos:
+    image: 192.168.1.154/kindo-common/nacos:2.0.1
+    container_name: kindo-nacos
+    restart: always
+    volumes: 
+      - "/kindo/nacos/logs:/home/nacos/logs"
+      - "/kindo/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties"
+      - "/kindo/nacos/conf/application.properties:/home/nacos/conf/application.properties"
+    environment:  
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone 
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_DB_NAME=${MYSQL_SERVICE_DB_NAME}
+      - MYSQL_SERVICE_PORT=${MYSQL_SERVICE_PORT}
+      - MYSQL_SERVICE_USER=${MYSQL_SERVICE_USER}
+      - MYSQL_SERVICE_PASSWORD=${MYSQL_SERVICE_PASSWORD}
+    ports:
+      - "8848:8848"
+    networks:
+      - kindo-network
+    depends_on:
+      - mysql
+
+  xxl-job-admin:
+    image: 192.168.1.154/kindo-common/xxl-job-admin:2.2.0
+    container_name: kindo-xxl-job-admin
+    restart: always
+    environment:
+      PARAMS: "--spring.datasource.url=${MYSQL_SERVICE_URL}
+               --spring.datasource.username=${MYSQL_SERVICE_USER}
+               --spring.datasource.password=${MYSQL_SERVICE_PASSWORD}
+               --server.servlet.context-path=/xxl-job-admin
+               --xxl.job.accessToken="
+    ports:
+      - "9003:8080"
+    networks:
+      - kindo-network
+
+networks:
+  kindo-network:
