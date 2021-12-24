@@ -1,0 +1,169 @@
+
+version: "3"
+services:
+  mrqc-service:
+    image: 192.168.1.154/kindo-ph/mrqc-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+      - "/kindo/nginx/html/mrqc/download:/kindo/download"
+    ports:
+      - "8081:8081"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+
+  paph-service:
+    image: 192.168.1.154/kindo-ph/paph-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8082:8082"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+      
+  rms-service:
+    image: 192.168.1.154/kindo-ph/rms-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8083:8083"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+      
+  immi-service:
+    image: 192.168.1.154/kindo-ph/immi-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8084:8084"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+      
+  pms-service:
+    image: 192.168.1.154/kindo-ph/pms-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+      - "/kindo/upload:/home/ruoyi/uploadPath"
+    ports:
+      - "8085:8085"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+      
+  da-service:
+    image: 192.168.1.154/kindo-ph/da-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8086:8086"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+      
+  guide-service:
+    image: 192.168.1.154/kindo-ph/guide-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8087:8087"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+
+  mqas-service:
+    image: 192.168.1.154/kindo-ph/mqas-service:1.0.0
+    restart: on-failure
+    command: 
+      - "--redis_pwd=${REDIS_PASSWORD}"
+      - "--mysql_user=${MYSQL_SERVICE_USER}"
+      - "--mysql_pwd=${MYSQL_SERVICE_PASSWORD}"
+      - "--omp_url=192.168.1.63"
+    volumes: 
+      - "/kindo/logs:/opt/logs"
+    ports:
+      - "8088:8088"
+    networks:
+      - kindo-network
+    external_links:
+      - redis
+      - mysql
+      - nacos
+      - xxl-job-admin
+
+networks:
+  kindo-network:
+    external: true
+
+
